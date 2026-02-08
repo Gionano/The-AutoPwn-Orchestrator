@@ -137,6 +137,34 @@ Control output names:
 python -m auto_pwn_orchestrator.cli --config config.toml run --output-prefix lab1 --no-timestamp
 ```
 
+## Ruby tools
+Optional helper scripts are available in `scripts/`:
+
+Validate config:
+```bash
+ruby scripts/validate_config.rb --config config.toml
+```
+
+Generate HTML report from `report.json`:
+```bash
+ruby scripts/report_to_html.rb --input output/report.json --output output/report.html
+```
+
+Export CSV from `report.json`:
+```bash
+ruby scripts/report_to_csv.rb --input output/report.json
+```
+
+Quick summary:
+```bash
+ruby scripts/report_summary.rb --input output/report.json
+```
+
+Compare inventory snapshots:
+```bash
+ruby scripts/inventory_diff.rb --old output/inventory_old.json --new output/inventory_new.json --format text
+```
+
 ## Metasploit Integration
 To enable Metasploit integration:
 1. Start the Metasploit RPC daemon using the provided script:
