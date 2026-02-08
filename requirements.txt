@@ -1,0 +1,7 @@
+tomli; python_version < "3.11"
+pymetasploit3
+python-nmap
+fastapi
+uvicorn
+jinja2
+python-multipart

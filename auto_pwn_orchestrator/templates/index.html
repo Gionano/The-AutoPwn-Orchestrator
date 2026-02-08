@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-Pwn Dashboard</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        h1, h2 { color: #333; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .severity-critical { background-color: #ffcccc; }
+        .severity-high { background-color: #ffe6cc; }
+        .severity-medium { background-color: #ffffcc; }
+        .severity-low { background-color: #e6ffcc; }
+    </style>
+</head>
+<body>
+    <h1>Auto-Pwn Orchestrator Dashboard</h1>
+
+    <h2>Scan Summary</h2>
+    {% if report.summary %}
+    <ul>
+        <li>Targets: {{ report.summary.targets }}</li>
+        <li>Open Ports: {{ report.summary.open_ports }}</li>
+        <li>Findings: {{ report.summary.findings }}</li>
+    </ul>
+    {% else %}
+    <p>No report data available.</p>
+    {% endif %}
+
+    <h2>Findings</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Severity</th>
+                <th>Host</th>
+                <th>Port</th>
+                <th>Service</th>
+                <th>Title</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for finding in report.findings %}
+            <tr class="severity-{{ finding.severity }}">
+                <td>{{ finding.severity }}</td>
+                <td>{{ finding.target.host }} ({{ finding.target.ip }})</td>
+                <td>{{ finding.target.port }}</td>
+                <td>{{ finding.target.service }}</td>
+                <td>{{ finding.title }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Inventory</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Host</th>
+                <th>IP</th>
+                <th>Open Ports</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for host in inventory.hosts %}
+            <tr>
+                <td>{{ host.host }}</td>
+                <td>{{ host.ip }}</td>
+                <td>
+                    {% for port in host.ports %}
+                    {{ port.port }}/{{ port.service }}
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

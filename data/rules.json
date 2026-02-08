@@ -1,0 +1,277 @@
+[
+  {
+    "id": "smb-exposed",
+    "title": "SMB exposed on port 445",
+    "severity": "high",
+    "confidence": "medium",
+    "description": "SMB is reachable from the scan source. Exposed SMB often increases lateral movement risk.",
+    "remediation": "Restrict SMB to trusted hosts, disable SMBv1, and keep the service patched.",
+    "match": {
+      "port": 445
+    }
+  },
+  {
+    "id": "rdp-exposed",
+    "title": "RDP exposed on port 3389",
+    "severity": "high",
+    "confidence": "medium",
+    "description": "RDP is reachable from the scan source. Exposed RDP can enable brute force or credential abuse.",
+    "remediation": "Restrict RDP access, enforce MFA, and monitor authentication attempts.",
+    "match": {
+      "port": 3389
+    }
+  },
+  {
+    "id": "telnet-exposed",
+    "title": "Telnet exposed on port 23",
+    "severity": "high",
+    "confidence": "high",
+    "description": "Telnet provides unencrypted remote access and should not be exposed.",
+    "remediation": "Disable Telnet and use SSH with strong authentication.",
+    "match": {
+      "port": 23
+    }
+  },
+  {
+    "id": "ftp-exposed",
+    "title": "FTP exposed on port 21",
+    "severity": "medium",
+    "confidence": "medium",
+    "description": "FTP provides unencrypted file transfer and may expose credentials.",
+    "remediation": "Disable FTP or replace with SFTP/FTPS and restrict access.",
+    "match": {
+      "port": 21
+    }
+  },
+  {
+    "id": "ssh-exposed",
+    "title": "SSH exposed on port 22",
+    "severity": "low",
+    "confidence": "low",
+    "description": "SSH is reachable from the scan source. Exposure increases the authentication attack surface.",
+    "remediation": "Restrict SSH access, enforce key-based auth, and disable root login.",
+    "match": {
+      "port": 22
+    }
+  },
+  {
+    "id": "smtp-exposed",
+    "title": "SMTP exposed on port 25",
+    "severity": "medium",
+    "confidence": "low",
+    "description": "SMTP exposure can enable abuse or relay attempts if misconfigured.",
+    "remediation": "Restrict SMTP to trusted networks and disable open relay.",
+    "match": {
+      "port": 25
+    }
+  },
+  {
+    "id": "dns-exposed",
+    "title": "DNS exposed on port 53",
+    "severity": "low",
+    "confidence": "low",
+    "description": "DNS exposure may leak infrastructure details if recursion is open.",
+    "remediation": "Restrict recursion and limit DNS to trusted clients.",
+    "match": {
+      "port": 53
+    }
+  },
+  {
+    "id": "pop3-exposed",
+    "title": "POP3 exposed on port 110",
+    "severity": "medium",
+    "confidence": "low",
+    "description": "POP3 exposure can reveal credentials if not secured.",
+    "remediation": "Disable POP3 or enforce TLS and strong auth.",
+    "match": {
+      "port": 110
+    }
+  },
+  {
+    "id": "imap-exposed",
+    "title": "IMAP exposed on port 143",
+    "severity": "medium",
+    "confidence": "low",
+    "description": "IMAP exposure can reveal credentials if not secured.",
+    "remediation": "Enforce TLS and strong authentication.",
+    "match": {
+      "port": 143
+    }
+  },
+  {
+    "id": "ldap-exposed",
+    "title": "LDAP exposed on port 389",
+    "severity": "medium",
+    "confidence": "low",
+    "description": "LDAP exposure may allow directory enumeration.",
+    "remediation": "Restrict LDAP access and enforce authentication.",
+    "match": {
+      "port": 389
+    }
+  },
+  {
+    "id": "http-exposed",
+    "title": "HTTP exposed on port 80",
+    "severity": "low",
+    "confidence": "low",
+    "description": "HTTP is reachable from the scan source. Review authentication and patch levels.",
+    "remediation": "Harden HTTP services and ensure they are patched.",
+    "match": {
+      "port": 80
+    }
+  },
+  {
+    "id": "https-exposed",
+    "title": "HTTPS exposed on port 443",
+    "severity": "low",
+    "confidence": "low",
+    "description": "HTTPS is reachable from the scan source. Review authentication and patch levels.",
+    "remediation": "Harden HTTPS services and ensure they are patched.",
+    "match": {
+      "port": 443
+    }
+  },
+  {
+    "id": "mysql-exposed",
+    "title": "MySQL exposed on port 3306",
+    "severity": "medium",
+    "confidence": "medium",
+    "description": "Database services exposed to untrusted networks are high-value targets.",
+    "remediation": "Restrict access to database services and enforce strong auth.",
+    "match": {
+      "port": 3306
+    }
+  },
+  {
+    "id": "postgres-exposed",
+    "title": "PostgreSQL exposed on port 5432",
+    "severity": "medium",
+    "confidence": "medium",
+    "description": "Database services exposed to untrusted networks are high-value targets.",
+    "remediation": "Restrict access to database services and enforce strong auth.",
+    "match": {
+      "port": 5432
+    }
+  },
+  {
+    "id": "redis-exposed",
+    "title": "Redis exposed on port 6379",
+    "severity": "high",
+    "confidence": "medium",
+    "description": "Redis is reachable and often misconfigured without authentication.",
+    "remediation": "Bind Redis to trusted interfaces and require authentication.",
+    "match": {
+      "port": 6379
+    }
+  },
+  {
+    "id": "mongodb-exposed",
+    "title": "MongoDB exposed on port 27017",
+    "severity": "high",
+    "confidence": "medium",
+    "description": "MongoDB is reachable and may be exposed without authentication.",
+    "remediation": "Bind MongoDB to trusted interfaces and enable authentication.",
+    "match": {
+      "port": 27017
+    }
+  },
+  {
+    "id": "snmp-exposed",
+    "title": "SNMP exposed on port 161",
+    "severity": "medium",
+    "confidence": "medium",
+    "description": "SNMP exposure can leak sensitive configuration data.",
+    "remediation": "Restrict SNMP, enforce SNMPv3, and rotate community strings.",
+    "match": {
+      "port": 161
+    }
+  },
+  {
+    "id": "vnc-exposed",
+    "title": "VNC exposed on port 5900",
+    "severity": "high",
+    "confidence": "medium",
+    "description": "VNC exposure can allow remote access attempts.",
+    "remediation": "Restrict VNC to trusted networks and enforce strong auth.",
+    "match": {
+      "port": 5900
+    }
+  },
+  {
+    "id": "winrm-exposed",
+    "title": "WinRM exposed on port 5985",
+    "severity": "medium",
+    "confidence": "medium",
+    "description": "WinRM exposure increases remote management attack surface.",
+    "remediation": "Restrict WinRM to trusted hosts and enforce strong auth.",
+    "match": {
+      "port": 5985
+    }
+  },
+  {
+    "id": "nfs-exposed",
+    "title": "NFS exposed on port 2049",
+    "severity": "high",
+    "confidence": "medium",
+    "description": "NFS exposure can lead to unauthorized file access if misconfigured.",
+    "remediation": "Restrict NFS to trusted networks and enforce export controls.",
+    "match": {
+      "port": 2049
+    }
+  },
+  {
+    "id": "docker-api-exposed",
+    "title": "Docker API exposed on port 2375",
+    "severity": "critical",
+    "confidence": "medium",
+    "description": "Unauthenticated Docker API exposure can allow container control.",
+    "remediation": "Disable unauthenticated Docker API and restrict access.",
+    "match": {
+      "port": 2375
+    }
+  },
+  {
+    "id": "docker-api-tls-exposed",
+    "title": "Docker API TLS port exposed on 2376",
+    "severity": "high",
+    "confidence": "low",
+    "description": "Docker API TLS exposure should be restricted to trusted clients.",
+    "remediation": "Restrict Docker API TLS access to trusted networks.",
+    "match": {
+      "port": 2376
+    }
+  },
+  {
+    "id": "memcached-exposed",
+    "title": "Memcached exposed on port 11211",
+    "severity": "high",
+    "confidence": "medium",
+    "description": "Memcached exposure can leak cached data or be abused for amplification.",
+    "remediation": "Bind Memcached to trusted interfaces and restrict access.",
+    "match": {
+      "port": 11211
+    }
+  },
+  {
+    "id": "elasticsearch-exposed",
+    "title": "Elasticsearch exposed on port 9200",
+    "severity": "high",
+    "confidence": "medium",
+    "description": "Elasticsearch exposure can lead to data access if not secured.",
+    "remediation": "Restrict access and enable authentication.",
+    "match": {
+      "port": 9200
+    }
+  },
+  {
+    "id": "kibana-exposed",
+    "title": "Kibana exposed on port 5601",
+    "severity": "medium",
+    "confidence": "low",
+    "description": "Kibana exposure can leak dashboards or data if not secured.",
+    "remediation": "Restrict access and enable authentication.",
+    "match": {
+      "port": 5601
+    }
+  }
+]

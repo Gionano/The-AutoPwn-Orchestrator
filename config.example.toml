@@ -1,0 +1,44 @@
+[targets]
+allowlist = ["127.0.0.1/32"]
+include = ["127.0.0.1"]
+cidrs = []
+max_hosts = 256
+
+[scan]
+ports = [22, 80, 443, 445, 3389, 3306, 5432, 6379, 27017]
+timeout_seconds = 1.0
+concurrency = 200
+banner_bytes = 256
+resolve_dns = true
+
+[output]
+directory = "output"
+inventory_file = "inventory.json"
+report_file = "report.json"
+report_text_file = "report.txt"
+report_csv_file = "report.csv"
+summary_csv_file = "summary.csv"
+timestamped = true
+
+[inference]
+rules_file = "data/rules.json"
+
+[metasploit]
+host = "127.0.0.1"
+port = 55553
+username = "msf"
+password = "msf"
+ssl = true
+enabled = false
+allowlist_modules = []
+dry_run = true
+
+[nmap]
+enabled = false
+arguments = "-sV -O"
+sudo = false
+
+[web]
+enabled = false
+host = "127.0.0.1"
+port = 8000
