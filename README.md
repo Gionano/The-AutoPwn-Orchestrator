@@ -13,6 +13,7 @@ It includes optional Metasploit integration for controlled, authorized testing.
 - **(Optional)** Runs Nmap scans for deeper service analysis
 - **(Optional)** Provides a Web Dashboard for viewing results
 - **(Optional)** Automates Brute Force attacks on discovered services
+- **(Optional)** Performs targeted attacks (e.g., MS17-010) and post-exploitation looting
 
 ## Quick start
 1) Create a config file and edit targets.
@@ -48,14 +49,28 @@ python -m auto_pwn_orchestrator.cli --config config.toml web
 ```
 Access it at `http://127.0.0.1:8000`.
 
-### Nmap Integration
-Enable Nmap in `config.toml` to run deeper scans on discovered open ports.
+### Nmap Integration & Auto-Exploit Matching
+Enable Nmap in `config.toml` to run deeper scans. The tool will automatically match discovered service versions against a local exploit database (`data/exploit_db.json`) and suggest potential Metasploit modules.
 ```toml
 [nmap]
 enabled = true
 arguments = "-sV -O"
 sudo = false
 ```
+
+### Targeted Attacks
+Run specific, high-value attack workflows.
+```bash
+python -m auto_pwn_orchestrator.cli attack --type ms17-010 --target 192.168.1.50
+```
+Supported types: `ms17-010`, `vsftpd`.
+
+### Post-Exploitation (Auto-Loot)
+Automatically gather information (sysinfo, uid, hashdump) from all active Metasploit sessions.
+```bash
+python -m auto_pwn_orchestrator.cli loot
+```
+Results are saved to `output/loot/<ip>/`.
 
 ### Brute Force
 Run targeted brute force attacks using Metasploit auxiliary modules.

